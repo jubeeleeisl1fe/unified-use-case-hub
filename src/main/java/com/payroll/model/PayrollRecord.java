@@ -17,6 +17,7 @@ public class PayrollRecord {
     private Employee employee;
     private double basicSalary;
     private double deductions;
+    private double taxAmount;
     private double netSalary;
     private LocalDate paymentDate;
 }
