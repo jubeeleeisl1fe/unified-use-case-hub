@@ -15,3 +15,30 @@ export interface PayrollRecord {
   netSalary: number;
   paymentDate: string;
 }
+
+export interface BonusRecord {
+  id: string;
+  employeeId: string;
+  performanceScore: number;
+  bonusAmount: number;
+  date: string;
+}
+
+export interface LeaveRecord {
+  id: string;
+  employeeId: string;
+  startDate: string;
+  endDate: string;
+  type: string;
+  status: 'pending' | 'approved' | 'rejected';
+}
+
+export interface TaxReport {
+  id: string;
+  employeeId: string;
+  year: number;
+  totalEarnings: number;
+  totalDeductions: number;
+  taxableIncome: number;
+  generatedDate: string;
+}
