@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Employee, PayrollRecord, BonusRecord, LeaveRecord, TaxReport } from '../models/Employee';
 import PayrollService from '../services/PayrollService';
@@ -14,6 +13,7 @@ import {
   CalendarDays,
   FileText,
 } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 
 const PayrollManagement = () => {
   const [employees, setEmployees] = useState<Employee[]>([]);
@@ -126,288 +126,367 @@ const PayrollManagement = () => {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="p-6 bg-white rounded-lg shadow">
-        <h2 className="text-2xl font-bold mb-4">Add New Employee</h2>
-        <div className="space-y-4">
-          <Input
-            placeholder="Name"
-            value={newEmployee.name || ''}
-            onChange={(e) => setNewEmployee({ ...newEmployee, name: e.target.value })}
-          />
-          <Input
-            placeholder="Position"
-            value={newEmployee.position || ''}
-            onChange={(e) => setNewEmployee({ ...newEmployee, position: e.target.value })}
-          />
-          <Input
-            type="number"
-            placeholder="Salary"
-            value={newEmployee.salary || ''}
-            onChange={(e) => setNewEmployee({ ...newEmployee, salary: Number(e.target.value) })}
-          />
-          <Button onClick={handleAddEmployee}>Add Employee</Button>
-        </div>
+    <div className="container mx-auto px-4 py-8 space-y-8">
+      <div className="bg-gradient-to-br from-primary/10 to-primary/20 rounded-2xl shadow-lg">
+        <Card className="border-none shadow-none bg-transparent">
+          <CardHeader>
+            <CardTitle className="text-3xl font-bold text-primary-foreground">
+              Employee Payroll Management
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-3 gap-4">
+              <Input
+                placeholder="Name"
+                className="col-span-1"
+                value={newEmployee.name || ''}
+                onChange={(e) => setNewEmployee({ ...newEmployee, name: e.target.value })}
+              />
+              <Input
+                placeholder="Position"
+                className="col-span-1"
+                value={newEmployee.position || ''}
+                onChange={(e) => setNewEmployee({ ...newEmployee, position: e.target.value })}
+              />
+              <Input
+                type="number"
+                placeholder="Salary"
+                className="col-span-1"
+                value={newEmployee.salary || ''}
+                onChange={(e) => setNewEmployee({ ...newEmployee, salary: Number(e.target.value) })}
+              />
+            </div>
+            <Button 
+              onClick={handleAddEmployee} 
+              className="w-full mt-4 bg-primary hover:bg-primary/90 transition-colors"
+            >
+              Add Employee
+            </Button>
+          </CardContent>
+        </Card>
       </div>
 
-      <div className="p-6 bg-white rounded-lg shadow">
-        <h2 className="text-2xl font-bold mb-4">Employee Management</h2>
+      <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
         <Tabs defaultValue="payroll" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="payroll" className="flex items-center gap-2">
+          <TabsList className="grid w-full grid-cols-4 bg-muted/50 rounded-none">
+            <TabsTrigger 
+              value="payroll" 
+              className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
               <BadgeDollarSign className="h-4 w-4" />
               Payroll
             </TabsTrigger>
-            <TabsTrigger value="bonus" className="flex items-center gap-2">
+            <TabsTrigger 
+              value="bonus" 
+              className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
               <BadgePercent className="h-4 w-4" />
               Bonus
             </TabsTrigger>
-            <TabsTrigger value="leave" className="flex items-center gap-2">
+            <TabsTrigger 
+              value="leave" 
+              className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
               <CalendarDays className="h-4 w-4" />
               Leave
             </TabsTrigger>
-            <TabsTrigger value="tax" className="flex items-center gap-2">
+            <TabsTrigger 
+              value="tax" 
+              className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            >
               <FileText className="h-4 w-4" />
               Tax
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="payroll" className="mt-4">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Position</TableHead>
-                  <TableHead>Salary</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {employees.map((employee) => (
-                  <TableRow key={employee.id}>
-                    <TableCell>{employee.name}</TableCell>
-                    <TableCell>{employee.position}</TableCell>
-                    <TableCell>${employee.salary}</TableCell>
-                    <TableCell>
-                      <Button onClick={() => handleCalculatePayroll(employee)}>
-                        Calculate Payroll
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-
-            <div className="mt-8">
-              <h3 className="text-xl font-bold mb-4">Payroll Records</h3>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Employee ID</TableHead>
-                    <TableHead>Basic Salary</TableHead>
-                    <TableHead>Deductions</TableHead>
-                    <TableHead>Net Salary</TableHead>
-                    <TableHead>Payment Date</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {payrollRecords.map((record) => (
-                    <TableRow key={record.id}>
-                      <TableCell>{record.employeeId}</TableCell>
-                      <TableCell>${record.basicSalary}</TableCell>
-                      <TableCell>${record.deductions}</TableCell>
-                      <TableCell>${record.netSalary}</TableCell>
-                      <TableCell>{new Date(record.paymentDate).toLocaleDateString()}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+          <TabsContent value="payroll" className="p-6">
+            <div className="space-y-6">
+              <Card className="shadow-sm">
+                <CardHeader>
+                  <CardTitle>Employee Payroll</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Position</TableHead>
+                        <TableHead>Salary</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {employees.map((employee) => (
+                        <TableRow key={employee.id}>
+                          <TableCell>{employee.name}</TableCell>
+                          <TableCell>{employee.position}</TableCell>
+                          <TableCell>${employee.salary}</TableCell>
+                          <TableCell>
+                            <Button onClick={() => handleCalculatePayroll(employee)}>
+                              Calculate Payroll
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+              
+              <Card className="shadow-sm">
+                <CardHeader>
+                  <CardTitle>Payroll Records</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Employee ID</TableHead>
+                        <TableHead>Basic Salary</TableHead>
+                        <TableHead>Deductions</TableHead>
+                        <TableHead>Net Salary</TableHead>
+                        <TableHead>Payment Date</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {payrollRecords.map((record) => (
+                        <TableRow key={record.id}>
+                          <TableCell>{record.employeeId}</TableCell>
+                          <TableCell>${record.basicSalary}</TableCell>
+                          <TableCell>${record.deductions}</TableCell>
+                          <TableCell>${record.netSalary}</TableCell>
+                          <TableCell>{new Date(record.paymentDate).toLocaleDateString()}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
             </div>
           </TabsContent>
 
-          <TabsContent value="bonus" className="mt-4">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Position</TableHead>
-                  <TableHead>Performance Score</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {employees.map((employee) => (
-                  <TableRow key={employee.id}>
-                    <TableCell>{employee.name}</TableCell>
-                    <TableCell>{employee.position}</TableCell>
-                    <TableCell>
-                      <Input
-                        type="number"
-                        min="0"
-                        max="10"
-                        placeholder="Score (0-10)"
-                        value={performanceScore}
-                        onChange={(e) => setPerformanceScore(Number(e.target.value))}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Button onClick={() => handleCalculateBonus(employee)}>
-                        Calculate Bonus
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-
-            <div className="mt-8">
-              <h3 className="text-xl font-bold mb-4">Bonus Records</h3>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Employee ID</TableHead>
-                    <TableHead>Performance Score</TableHead>
-                    <TableHead>Bonus Amount</TableHead>
-                    <TableHead>Date</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {bonusRecords.map((record) => (
-                    <TableRow key={record.id}>
-                      <TableCell>{record.employeeId}</TableCell>
-                      <TableCell>{record.performanceScore}</TableCell>
-                      <TableCell>${record.bonusAmount}</TableCell>
-                      <TableCell>{new Date(record.date).toLocaleDateString()}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+          <TabsContent value="bonus" className="p-6">
+            <div className="space-y-6">
+              <Card className="shadow-sm">
+                <CardHeader>
+                  <CardTitle>Employee Bonus</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Position</TableHead>
+                        <TableHead>Performance Score</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {employees.map((employee) => (
+                        <TableRow key={employee.id}>
+                          <TableCell>{employee.name}</TableCell>
+                          <TableCell>{employee.position}</TableCell>
+                          <TableCell>
+                            <Input
+                              type="number"
+                              min="0"
+                              max="10"
+                              placeholder="Score (0-10)"
+                              value={performanceScore}
+                              onChange={(e) => setPerformanceScore(Number(e.target.value))}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Button onClick={() => handleCalculateBonus(employee)}>
+                              Calculate Bonus
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+              
+              <Card className="shadow-sm">
+                <CardHeader>
+                  <CardTitle>Bonus Records</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Employee ID</TableHead>
+                        <TableHead>Performance Score</TableHead>
+                        <TableHead>Bonus Amount</TableHead>
+                        <TableHead>Date</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {bonusRecords.map((record) => (
+                        <TableRow key={record.id}>
+                          <TableCell>{record.employeeId}</TableCell>
+                          <TableCell>{record.performanceScore}</TableCell>
+                          <TableCell>${record.bonusAmount}</TableCell>
+                          <TableCell>{new Date(record.date).toLocaleDateString()}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
             </div>
           </TabsContent>
 
-          <TabsContent value="leave" className="mt-4">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Position</TableHead>
-                  <TableHead>Leave Details</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {employees.map((employee) => (
-                  <TableRow key={employee.id}>
-                    <TableCell>{employee.name}</TableCell>
-                    <TableCell>{employee.position}</TableCell>
-                    <TableCell>
-                      <div className="space-y-2">
-                        <Input
-                          type="date"
-                          placeholder="Start Date"
-                          value={leaveStartDate}
-                          onChange={(e) => setLeaveStartDate(e.target.value)}
-                        />
-                        <Input
-                          type="date"
-                          placeholder="End Date"
-                          value={leaveEndDate}
-                          onChange={(e) => setLeaveEndDate(e.target.value)}
-                        />
-                        <Input
-                          placeholder="Leave Type"
-                          value={leaveType}
-                          onChange={(e) => setLeaveType(e.target.value)}
-                        />
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Button onClick={() => handleRecordLeave(employee)}>
-                        Record Leave
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-
-            <div className="mt-8">
-              <h3 className="text-xl font-bold mb-4">Leave Records</h3>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Employee ID</TableHead>
-                    <TableHead>Start Date</TableHead>
-                    <TableHead>End Date</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {leaveRecords.map((record) => (
-                    <TableRow key={record.id}>
-                      <TableCell>{record.employeeId}</TableCell>
-                      <TableCell>{new Date(record.startDate).toLocaleDateString()}</TableCell>
-                      <TableCell>{new Date(record.endDate).toLocaleDateString()}</TableCell>
-                      <TableCell>{record.type}</TableCell>
-                      <TableCell>{record.status}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+          <TabsContent value="leave" className="p-6">
+            <div className="space-y-6">
+              <Card className="shadow-sm">
+                <CardHeader>
+                  <CardTitle>Leave Management</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Position</TableHead>
+                        <TableHead>Leave Details</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {employees.map((employee) => (
+                        <TableRow key={employee.id}>
+                          <TableCell>{employee.name}</TableCell>
+                          <TableCell>{employee.position}</TableCell>
+                          <TableCell>
+                            <div className="space-y-2">
+                              <Input
+                                type="date"
+                                placeholder="Start Date"
+                                value={leaveStartDate}
+                                onChange={(e) => setLeaveStartDate(e.target.value)}
+                              />
+                              <Input
+                                type="date"
+                                placeholder="End Date"
+                                value={leaveEndDate}
+                                onChange={(e) => setLeaveEndDate(e.target.value)}
+                              />
+                              <Input
+                                placeholder="Leave Type"
+                                value={leaveType}
+                                onChange={(e) => setLeaveType(e.target.value)}
+                              />
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Button onClick={() => handleRecordLeave(employee)}>
+                              Record Leave
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+              
+              <Card className="shadow-sm">
+                <CardHeader>
+                  <CardTitle>Leave Records</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Employee ID</TableHead>
+                        <TableHead>Start Date</TableHead>
+                        <TableHead>End Date</TableHead>
+                        <TableHead>Type</TableHead>
+                        <TableHead>Status</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {leaveRecords.map((record) => (
+                        <TableRow key={record.id}>
+                          <TableCell>{record.employeeId}</TableCell>
+                          <TableCell>{new Date(record.startDate).toLocaleDateString()}</TableCell>
+                          <TableCell>{new Date(record.endDate).toLocaleDateString()}</TableCell>
+                          <TableCell>{record.type}</TableCell>
+                          <TableCell>{record.status}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
             </div>
           </TabsContent>
 
-          <TabsContent value="tax" className="mt-4">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Position</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {employees.map((employee) => (
-                  <TableRow key={employee.id}>
-                    <TableCell>{employee.name}</TableCell>
-                    <TableCell>{employee.position}</TableCell>
-                    <TableCell>
-                      <Button onClick={() => handleGenerateTaxReport(employee)}>
-                        Generate Tax Report
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-
-            <div className="mt-8">
-              <h3 className="text-xl font-bold mb-4">Tax Reports</h3>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Employee ID</TableHead>
-                    <TableHead>Year</TableHead>
-                    <TableHead>Total Earnings</TableHead>
-                    <TableHead>Total Deductions</TableHead>
-                    <TableHead>Taxable Income</TableHead>
-                    <TableHead>Generated Date</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {taxReports.map((report) => (
-                    <TableRow key={report.id}>
-                      <TableCell>{report.employeeId}</TableCell>
-                      <TableCell>{report.year}</TableCell>
-                      <TableCell>${report.totalEarnings}</TableCell>
-                      <TableCell>${report.totalDeductions}</TableCell>
-                      <TableCell>${report.taxableIncome}</TableCell>
-                      <TableCell>{new Date(report.generatedDate).toLocaleDateString()}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+          <TabsContent value="tax" className="p-6">
+            <div className="space-y-6">
+              <Card className="shadow-sm">
+                <CardHeader>
+                  <CardTitle>Tax Reporting</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Position</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {employees.map((employee) => (
+                        <TableRow key={employee.id}>
+                          <TableCell>{employee.name}</TableCell>
+                          <TableCell>{employee.position}</TableCell>
+                          <TableCell>
+                            <Button onClick={() => handleGenerateTaxReport(employee)}>
+                              Generate Tax Report
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+              
+              <Card className="shadow-sm">
+                <CardHeader>
+                  <CardTitle>Tax Reports</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Employee ID</TableHead>
+                        <TableHead>Year</TableHead>
+                        <TableHead>Total Earnings</TableHead>
+                        <TableHead>Total Deductions</TableHead>
+                        <TableHead>Taxable Income</TableHead>
+                        <TableHead>Generated Date</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {taxReports.map((report) => (
+                        <TableRow key={report.id}>
+                          <TableCell>{report.employeeId}</TableCell>
+                          <TableCell>{report.year}</TableCell>
+                          <TableCell>${report.totalEarnings}</TableCell>
+                          <TableCell>${report.totalDeductions}</TableCell>
+                          <TableCell>${report.taxableIncome}</TableCell>
+                          <TableCell>{new Date(report.generatedDate).toLocaleDateString()}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
             </div>
           </TabsContent>
         </Tabs>
