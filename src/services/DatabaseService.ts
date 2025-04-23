@@ -1,26 +1,14 @@
 
-// Singleton Pattern for Database Service
+// This service mimics a database using localStorage for demo purposes
 class DatabaseService {
-  private static instance: DatabaseService;
-
-  private constructor() {}
-
-  public static getInstance(): DatabaseService {
-    if (!DatabaseService.instance) {
-      DatabaseService.instance = new DatabaseService();
-    }
-    return DatabaseService.instance;
-  }
-
-  // Repository Pattern
-  public saveData(key: string, data: any): void {
-    localStorage.setItem(key, JSON.stringify(data));
-  }
-
   public getData(key: string): any {
     const data = localStorage.getItem(key);
     return data ? JSON.parse(data) : null;
   }
+
+  public saveData(key: string, data: any): void {
+    localStorage.setItem(key, JSON.stringify(data));
+  }
 }
 
-export default DatabaseService.getInstance();
+export default new DatabaseService();
