@@ -1,13 +1,21 @@
-
 import { Employee, PayrollRecord, BonusRecord, LeaveRecord, TaxReport } from '../models/Employee';
 import DatabaseService from '../services/DatabaseService';
+import { TaxCalculator, BasicTaxStrategy, ProgressiveTaxStrategy } from '../utils/TaxCalculationStrategy';
 
 class PayrollService {
   // Use case 1: Basic Payroll Calculation
   calculatePayroll(employee: Employee): PayrollRecord {
     const basicSalary = employee.salary;
     const deductions = basicSalary * 0.1; // 10% standard deduction
-    const netSalary = basicSalary - deductions;
+
+    // Use strategy pattern for tax calculation
+    const taxCalculator = new TaxCalculator(); // Default to basic strategy
+    const taxAmount = taxCalculator.calculateTax(basicSalary);
+
+    // Option to switch strategies
+    // taxCalculator.setStrategy(new ProgressiveTaxStrategy());
+    
+    const netSalary = basicSalary - deductions - taxAmount;
 
     const payrollRecord: PayrollRecord = {
       id: crypto.randomUUID(),
