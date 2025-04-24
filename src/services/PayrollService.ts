@@ -1,3 +1,4 @@
+
 import { Employee, PayrollRecord, BonusRecord, LeaveRecord, TaxReport } from '../models/Employee';
 import DatabaseService from '../services/DatabaseService';
 import { TaxCalculator, BasicTaxStrategy, ProgressiveTaxStrategy } from '../utils/TaxCalculationStrategy';
@@ -22,6 +23,7 @@ class PayrollService {
       employeeId: employee.id,
       basicSalary,
       deductions,
+      taxAmount, // Add the tax amount to the record
       netSalary,
       paymentDate: new Date().toISOString(),
     };
@@ -76,6 +78,7 @@ class PayrollService {
     const payrollRecords = this.getPayrollHistory(employee.id);
     const totalEarnings = payrollRecords.reduce((sum, record) => sum + record.basicSalary, 0);
     const totalDeductions = payrollRecords.reduce((sum, record) => sum + record.deductions, 0);
+    const totalTaxAmount = payrollRecords.reduce((sum, record) => sum + (record.taxAmount || 0), 0);
     
     const taxReport: TaxReport = {
       id: crypto.randomUUID(),
@@ -84,6 +87,7 @@ class PayrollService {
       totalEarnings,
       totalDeductions,
       taxableIncome: totalEarnings - totalDeductions,
+      totalTaxAmount, // Store the total tax amount
       generatedDate: new Date().toISOString()
     };
 

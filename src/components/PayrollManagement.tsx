@@ -121,7 +121,7 @@ const PayrollManagement = () => {
     setTaxReports([...taxReports, taxReport]);
     toast({
       title: "Success",
-      description: "Tax report generated successfully",
+      description: `Tax report generated with total tax amount: $${taxReport.totalTaxAmount.toFixed(2)}`,
     });
   };
 
@@ -469,6 +469,7 @@ const PayrollManagement = () => {
                         <TableHead>Total Earnings</TableHead>
                         <TableHead>Total Deductions</TableHead>
                         <TableHead>Taxable Income</TableHead>
+                        <TableHead>Total Tax Amount</TableHead>
                         <TableHead>Generated Date</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -480,6 +481,7 @@ const PayrollManagement = () => {
                           <TableCell>${report.totalEarnings}</TableCell>
                           <TableCell>${report.totalDeductions}</TableCell>
                           <TableCell>${report.taxableIncome}</TableCell>
+                          <TableCell>${report.totalTaxAmount || 0}</TableCell>
                           <TableCell>{new Date(report.generatedDate).toLocaleDateString()}</TableCell>
                         </TableRow>
                       ))}

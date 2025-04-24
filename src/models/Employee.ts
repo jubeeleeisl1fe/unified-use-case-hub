@@ -12,6 +12,7 @@ export interface PayrollRecord {
   employeeId: string;
   basicSalary: number;
   deductions: number;
+  taxAmount: number; 
   netSalary: number;
   paymentDate: string;
 }
@@ -40,5 +41,6 @@ export interface TaxReport {
   totalEarnings: number;
   totalDeductions: number;
   taxableIncome: number;
+  totalTaxAmount: number; // Add total tax amount field
   generatedDate: string;
 }
